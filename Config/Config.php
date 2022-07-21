@@ -21,4 +21,6 @@
 	//Simbolo de moneda
 	const SMONEDA = "$";
 
+	const NUMERO = 10;
+
 ?>
