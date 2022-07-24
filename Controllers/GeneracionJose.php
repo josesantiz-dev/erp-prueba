@@ -33,5 +33,19 @@
             echo(json_encode($arrGeneraciones,JSON_UNESCAPED_UNICODE));
 
         }
+
+        public function setNuevaGeneracion()
+        {
+            $arrDatos = $_POST;
+
+            $nombreGeneracion = $arrDatos['txtNombreGeneracion'];
+            $fechaInicio = $arrDatos['dateFechaInicio'];
+            $fechaFin = $arrDatos['dateFechaFin'];
+            $estatus = 1;
+            $idUser = 5;
+            $response = $this->model->insertNuevaGeneracion($nombreGeneracion,$fechaInicio,$fechaFin,$estatus,$idUser);
+
+            echo(json_encode($response,JSON_UNESCAPED_UNICODE));
+        }
     }
 ?>
