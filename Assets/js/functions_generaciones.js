@@ -1,3 +1,5 @@
+let btnNuevaGeneracion = document.getElementById("BtnNuevaGeneracion")
+
 document.addEventListener('DOMContentLoaded', function(){
 
     tableGeneraciones = $('#tableGenraciones').dataTable( {
@@ -35,3 +37,40 @@ document.addEventListener('DOMContentLoaded', function(){
 
 $('#tableGenraciones').DataTable();
 })
+
+console.log(btnNuevaGeneracion);
+
+
+    let formNuevaGeneracion = document.querySelector('#formNuevaGeneracion');
+    formNuevaGeneracion.onsubmit = function(e){
+      e.preventDefault();
+      
+      let nombreGeneracion = document.getElementById("txtNombreGeneracion").value;
+      let nombreFechaInicio = document.getElementById("dateFechaInicio").value;
+      let nombreFechaFin = document.getElementById("dateFechaFin").value;
+      console.log(nombreGeneracion)
+      console.log(nombreFechaInicio)
+      console.log(nombreFechaFin)
+
+      if(nombreGeneracion == ""|| nombreFechaInicio == ""|| nombreFechaFin == ""){
+        Swal.fire({
+            icon: 'campos requerrido',
+            title: 'Error...',
+            text: 'todos los campos son obligatorios'
+          })
+          return false;
+      }
+    let request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+     let ajaxUrl = base_url+'/GeneracionEdwin/setNuevaGneracion';
+     let formData = new FormData(formNuevaGeneracion);
+     request.open("POST", ajaxUrl,true);
+    request.send(formData);
+     request.onreadystatechange = function() {
+
+            if ( request.readyState == 4 && request.status == 200) {
+                let objData = JSON.parse(request.responseText);
+              console.log(objData);
+            }
+            return false;
+        }
+    }
