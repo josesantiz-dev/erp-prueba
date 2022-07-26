@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', function(){
             "dataSrc":""
         },
         "columns":[
-            {"data":"id"},
+            {"data":"numeracion"},
             {"data":"nombre_generacion"},
             {"data":"fecha_inicio_gen"},
             {"data":"fecha_fin_gen"},
-            {"data":"estatus"},
-            {"data":"id"},
+            {"data":"status"},
+            {"data":"acciones"},
           
         ],
         "responsive": true,
@@ -72,10 +72,77 @@ formNuevaGeneracion.onsubmit = function(e){
         if ( request.readyState == 4 && request.status == 200) 
         {
             let objData = JSON.parse(request.responseText);
-            console.log(objData);
+            if(objData.estatus == true){
+                Swal.fire({
+                    icon: 'succes',
+                    title: 'Exito!',
+                    text: objData.msg,
+                    
+                  })
+
+            }else{
+                Swal.fire({
+                    icon: 'Error',
+                    title: 'Error!',
+                    text: objData.msg,
+
+            })
+
+
+
+            
             
         }
+        formNuevaGeneracion.reset();
+        tableGeneraciones.api().ajax.reload();
+        
+        $(".close").click();
+        
         return false;
     }
-    
+    }
+}
+
+//Funcion eliminar Registro
+
+function fnEliminar(value)
+{
+    Swal.fire({
+        title: 'Desea eliminar?',
+        text: "Confirme si desea hacer esta accion!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'SI'
+      }).then((result) => {
+        
+        if (result.isConfirmed) {
+            let url = base_url + "/GeneracionMiguel/setEstatusGeneracion/"+value;
+            fetch(url).then (res => res.json()).then(response => {
+               if(response.estatus)
+               {
+                Swal.fire(
+                    'Eliminado!',
+                    response.msg,
+                    'success'
+                )
+                }else{
+                    Swal.fire(
+                        'Error!',
+                        response.msg,
+                        'Error'
+                    )
+               }
+
+               tableGeneraciones.api().ajax.reload();
+            
+            }).catch(err => {throw err});
+            /*Swal.fire(
+            'Eliminado!',
+            'El registro actual se ha eliminado.',
+            'success'
+          )*/
+        }
+      })
 }

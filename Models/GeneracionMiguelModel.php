@@ -10,7 +10,7 @@
 
         public function selectGeneraciones()
         {
-            $sql = "select * from t_generaciones";
+            $sql = "select * from t_generaciones WHERE estatus = 1";
             $request = $this->select_all($sql);
             return $request;
         }
@@ -23,6 +23,14 @@
 
 				$request = $this->insert($sql,array($nombreGeneracion,$fechaInicio,$fechaFin,$estatus,$idUsuario));
 				return $request;
+
+				
 		}
+		public function updateEstatusGeneracion(int $id)
+				{
+					$sql = "UPDATE t_generaciones SET estatus = ? WHERE id = $id";
+					$request = $this->update($sql,array(2));
+					return $request;
+				}
 	}
 ?>
