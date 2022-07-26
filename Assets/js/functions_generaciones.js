@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', function(){
             "dataSrc":""
         },
         "columns":[
-            {"data":"id"},
-            {"data":"nombre_generaciones"},
+            {"data":"numeracion"},
+            {"data":"nombre_generacion"},
             {"data":"fecha_inicio_gen"},
             {"data":"fecha_fin_gen"},
-            {"data":"estatus"},
-            {"data":"id"},
+            {"data":"status"},
+            {"data":"acciones"}
            
         ],
         "responsive": true,
@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function(){
 $('#tableGenraciones').DataTable();
 })
 
-console.log(btnNuevaGeneracion);
 
 
     let formNuevaGeneracion = document.querySelector('#formNuevaGeneracion');
@@ -48,9 +47,6 @@ console.log(btnNuevaGeneracion);
       let nombreGeneracion = document.getElementById("txtNombreGeneracion").value;
       let nombreFechaInicio = document.getElementById("dateFechaInicio").value;
       let nombreFechaFin = document.getElementById("dateFechaFin").value;
-      console.log(nombreGeneracion)
-      console.log(nombreFechaInicio)
-      console.log(nombreFechaFin)
 
       if(nombreGeneracion == ""|| nombreFechaInicio == ""|| nombreFechaFin == ""){
         Swal.fire({
@@ -69,8 +65,61 @@ console.log(btnNuevaGeneracion);
 
             if ( request.readyState == 4 && request.status == 200) {
                 let objData = JSON.parse(request.responseText);
-              console.log(objData);
+              if(objData.status == true){
+                Swal.fire({
+                  icon: 'success',
+                  title: '¡¡exito!!',
+                  text: objData.msg,
+                })
+                
+
+              }else{
+                Swal.fire({
+                  icon: 'error',
+                  title: '¡¡error!!',
+                  text: objData.msg,
+
+              })
+              
             }
-            return false;
+            formNuevaGeneracion.reset();
+            tableGeneraciones.api().ajax.reload();
+            $(".close").click()
         }
+        return false;
+    }
+  }
+  // funcion eliminar registro
+  function fnEliminar(value)
+    {
+      Swal.fire({
+        title: 'Seguro que quieres eliminar?',
+        text: "esto no se podra recuperar!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'si, eliminar!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          let url = base_url + "/GeneracionEdwin/setEstatusGeneracion/"+value;
+          fetch(url).then(res => res.json()).then(response =>{
+            if(response.estatus)
+            {
+               Swal.fire(
+            'Eliminado!',
+            response.msg,
+            'success'            
+          )
+        }else{
+                Swal.fire(
+                  'error!',
+                  response.msg,
+                  'error'
+                )
+            }
+            tableGeneraciones.api().ajax.reload();
+          }).catch(err => {throw err});
+        }
+      })
     }

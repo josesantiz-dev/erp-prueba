@@ -17,16 +17,21 @@
         public function getGeneraciones()
         
         {
-        //$data = "";
-        $data{'page_functions_js'} = "functions_generaciones.js";
+            $data{'page_functions_js'} = "functions_generaciones.js";
+
         $this->views->getView($this,"generacion",$data);
-        //$arrGeneraciones = $this->model->selectGeneraciones();
-        //var_dump($arrGeneraciones);
-       // echo (json_encode($arrGeneraciones, JSON_UNESCAPED_UNICODE));
+       
         }
         public function getlisGeneraciones()
         {
             $arrGeneraciones = $this->model->selectGeneraciones();
+            for($i = 0; $i < count($arrGeneraciones); $i++){
+                $arrGeneraciones[$i]["numeracion"] = $i+1;
+                $arrGeneraciones[$i]["status"] = ($arrGeneraciones[$i]["estatus"] == 1)?
+                '<span class="badge badge-success">Activo</span>': '<span class="badge badge-danger">Inactivo</span>';
+                $arrGeneraciones[$i]['acciones'] = '<button type="button" class="btn btn-primary btn-sm" >Actualizar</button> <button type="button" onclick = "fnEliminar('.$arrGeneraciones[$i]['id'].')" class="btn btn-danger btn-sm">Eliminar</button>';
+
+        }
             echo(json_encode($arrGeneraciones,JSON_UNESCAPED_UNICODE));
 
         }
@@ -40,9 +45,35 @@ $fechaFin = $arrDatos['dateFechaFin'];
 $status = 1;
 $idUser = 5;
         $response = $this->model->insertNuevaGeneracion($nombreGeneracion,$fechaInicio,$fechaFin,$status,$idUser);
-          echo(json_encode($response,JSON_UNESCAPED_UNICODE));
+         if($response){
+            $arrResponse = array ('status'=> true, 'msg'=> 'se inserto correctamente la nueva generacion');
+           
+
+        }else{ 
+            $arrResponse = array ('status'=> false, 'msg'=> 'no se inserto el registro');
+            
+         }
+
+
+          echo(json_encode($arrResponse,JSON_UNESCAPED_UNICODE));
 
         }
+        public function setEstatusGeneracion($valor)
+            {
+                $arrresponse = $this->model->updateEstatusGeneracion($valor);
+                if($arrresponse){
+                    $response = array ('estatus'=> true, 'msg'=> 'se elimino correctamente');
+                   
+        
+                }else{ 
+                    $response = array ('estatus'=> false, 'msg'=> 'no se pudo eliminar');
+                    
+                 }
+                echo(json_encode($response,JSON_UNESCAPED_UNICODE));
+            }
+        
         
     }
+
+    
 ?>
