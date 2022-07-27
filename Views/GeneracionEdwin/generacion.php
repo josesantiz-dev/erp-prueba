@@ -1,6 +1,7 @@
 <?php
   headerAdmin($data);
 getModal('GeneracionEdwin/modalNuevaGeneracion',$data);
+getModal('GeneracionEdwin/modalEditGeneracion',$data);
 
 ?>
 <div id="contentAjax"></div>

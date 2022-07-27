@@ -1,5 +1,5 @@
 let btnNuevaGeneracion = document.getElementById("BtnNuevaGeneracion")
-
+let formEditGeneracion = document.querySelector('#formEditGeneracion');
 document.addEventListener('DOMContentLoaded', function(){
 
     tableGeneraciones = $('#tableGenraciones').dataTable( {
@@ -122,4 +122,69 @@ $('#tableGenraciones').DataTable();
           }).catch(err => {throw err});
         }
       })
+    }
+    function fnActualizar(id){
+      let url = base_url + "/GeneracionEdwin/getGeneracion/"+id;
+
+      fetch(url).then(res => res.json()).then(response => {
+        document.getElementById("txtNombreGeneracionEdit").value = response.nombre_generacion;
+        document.getElementById("dateFechaInicioEdit").value = response.fecha_inicio_gen;
+        document.getElementById("dateFechaFinEdit").value = response.fecha_fin_gen;
+        document.getElementById("IdGeneracion").value = response.id;
+
+      }).catch(err =>{throw err})
+
+    }
+
+
+
+
+
+    formEditGeneracion.onsubmit = function(e){
+      e.preventDefault();
+      
+      let nombreGeneracionEdit = document.getElementById("txtNombreGeneracionEdit").value;
+      let nombreFechaInicioEdit = document.getElementById("dateFechaInicioEdit").value;
+      let nombreFechaFinEdit = document.getElementById("dateFechaFinEdit").value;
+
+      if(nombreGeneracionEdit == ""|| nombreFechaInicioEdit == ""|| nombreFechaFinEdit == ""){
+        Swal.fire({
+            icon: 'campos requerrido',
+            title: 'Error...',
+            text: 'todos los campos son obligatorios'
+          })
+          return false;
+      }
+    let request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+     let ajaxUrl = base_url+'/GeneracionEdwin/setEditGeneracion';
+     let formData = new FormData(formEditGeneracion);
+     request.open("POST", ajaxUrl,true);
+    request.send(formData);
+     request.onreadystatechange = function() {
+            if ( request.readyState == 4 && request.status == 200) {
+                let objData = JSON.parse(request.responseText);
+              if(objData.status == true){
+                Swal.fire({
+                  icon: 'success',
+                  title: '¡¡exito!!',
+                  text: objData.msg,
+                })
+                
+
+              }else{
+                Swal.fire({
+                  icon: 'error',
+                  title: '¡¡error!!',
+                  text: objData.msg,
+
+              })
+              
+            }
+            formEditGeneracion.reset();
+            tableGeneraciones.api().ajax.reload();
+            $(".close").click()
+        }
+        return false;
+      }
+
     }
