@@ -1,4 +1,5 @@
 let btnNuevaGeneracion = document.getElementById("btnNuevaGeneracion")
+let formEditGeneracion = document.getElementById("formNuevaGeneracionEdit");
 
 document.addEventListener('DOMContentLoaded', function(){
 
@@ -127,4 +128,63 @@ if(nombreGeneracion ==""|| nombreFechaInicio == "" || nombreFechaFin == "") {
                     }).catch (err => {throw err});
                 }
               })
+        }
+        function fnActualizar(id){
+            let url = base_url + "/GeneracionJesusK/getGeneracion/" +id;
+
+            fetch(url).then (res => res.json()).then(response => {
+                document.getElementById("txtNombreGeneracionEdit").value = response.nombre_generacion;
+                document.getElementById("dateFechaInicioEdit").value = response.fecha_inicio_gen;
+                document.getElementById("dateFechaFinEdit").value = response.fecha_fin_gen;
+                document.getElementById("txtIdGeneracion").value = response.id;
+            })
+
+        }
+
+        formEditGeneracion.onsubmit = function(e){
+            e.preventDefault();
+            let nombreGeneracionEdit = document.getElementById("txtNombreGeneracionEdit").value;
+let nombreFechaInicioEdit = document.getElementById("dateFechaInicioEdit").value;
+let nombreFechaFinEdit = document.getElementById("dateFechaFinEdit").value;
+if(nombreGeneracionEdit ==""|| nombreFechaInicioEdit == "" || nombreFechaFinEdit == "") {
+    Swal.fire({
+        icon: 'error',
+        title: 'Campo vacio',
+        text: 'FAVOR DE REVISAR!',
+      })
+      return false;
+}
+            let request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+            let ajaxUrl = base_url+'/GeneracionJesusK/setEditGeneracion';
+            let formData = new FormData(formEditGeneracion);
+            request.open("POST", ajaxUrl,true);
+            request.send(formData);
+            request.onreadystatechange = function() {
+
+                if ( request.readyState == 4 && request.status == 200) {
+                    let objData = JSON.parse(request.responseText);
+                    if(objData.estatus == true){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Exito...!',
+                            text: objData.msg
+                          })
+
+                    }else{
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error...!',
+                            text: objData.msg
+                            
+                          })
+                    }
+                    formEditGeneracion.reset();
+                    tableGeneraciones.api().ajax.reload();
+                    $(".close").click();
+
+                
+                  
+                }
+                return false;
+        }
         }

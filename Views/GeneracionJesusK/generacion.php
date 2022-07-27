@@ -1,6 +1,7 @@
 <?php
   headerAdmin($data); 
   getModal("GeneracionJesusK/modalNuevaGeneracion",$data);
+  getModal("GeneracionJesusK/modalEditGeneracion",$data);
 ?>
 <div id="contentAjax"></div>
 <div class="wrapper">

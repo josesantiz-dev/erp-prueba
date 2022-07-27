@@ -28,5 +28,17 @@
             $request = $this -> update($sql, array(2));
             return $request;
         }
+        public function selectGeneracion(int $id){
+            $sql = "SELECT *from t_generaciones WHERE id = $id";
+           $request = $this -> select ($sql);
+           return $request;
+        }
+        public function updateGeneracion(string $nombreGeneracion, string $fechaInicio, string $fechaFin, int $idGeneracion, int $idUser)
+        {
+            $sql = "UPDATE t_generaciones SET nombre_generacion = ?, fecha_inicio_gen = ?, fecha_fin_gen = ?, fecha_actualizacion = NOW(), id_usuario_actualizacion = ? WHERE id =  $idGeneracion";
+            $request = $this -> update ($sql, array($nombreGeneracion,$fechaInicio,$fechaFin,$idUser));
+            return $request;
+  
+        }
 	}
 ?>

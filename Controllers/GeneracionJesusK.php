@@ -35,7 +35,8 @@
           $arrGeneraciones[$i]["status"] = ($arrGeneraciones[$i]["estatus"] == 1)?
           '<span class="badge badge-success">Activo</span>': '<span class="badge badge-danger">Inactivo</span>
           ';
-          $arrGeneraciones[$i]['acciones'] = '<button type="button" class="btn btn-danger btn-sm">Actualizar</button> <button type="button" class="btn btn-dark btn-sm" onclick ="fnEliminar('.$arrGeneraciones[$i]['id'].')">Eliminar</button>';
+          $arrGeneraciones[$i]['acciones'] = '<button type="button" class="btn btn-danger btn-sm" onclick = "fnActualizar('.$arrGeneraciones[$i]['id'].')"data-toggle="modal" data-target="#modalEditGeneracion">Actualizar</button> 
+          <button type="button" class="btn btn-dark btn-sm" onclick ="fnEliminar('.$arrGeneraciones[$i]['id'].')">Eliminar</button>';
         }
         echo (json_encode($arrGeneraciones, JSON_UNESCAPED_UNICODE));
         }
@@ -72,7 +73,31 @@ public function setEstatusGeneracion($valor)
     }
     echo (json_encode($response, JSON_UNESCAPED_UNICODE));
 }
+
+public function getGeneracion(int $id)
+    {
+        $arrDatos = $this -> model -> selectGeneracion($id);
+        echo (json_encode($arrDatos, JSON_UNESCAPED_UNICODE));
+    }
+public function setEditGeneracion()
+{
+    $arrDatos = $_POST; 
+    $nombreGeneracion = $arrDatos ['txtNombreGeneracionEdit'];
+    $fechaInicio = $arrDatos ['dateFechaInicioEdit'];
+    $fechaFin = $arrDatos ['dateFechaFinEdit'];
+    $idGeneracion = $arrDatos ['txtIdGeneracion'];
+    $idUser = 10;
+    $arrResponse = $this -> model -> updateGeneracion($nombreGeneracion, $fechaInicio, $fechaFin, $idGeneracion, $idUser);
+    if ($arrResponse){
+        $response = array('estatus' => true, 'msg' => 'SE ACTUALIZO CORRECTAMENTE :) '); 
     
+    }else{
+        $response = array('estatus' => false, 'msg' => 'NO SE PUDO ACTUALIZAR :( '); 
+    
+    }
+    echo (json_encode($response, JSON_UNESCAPED_UNICODE));
+}
+
     }
 
 ?>
